@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#087e8b">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="logo-ja.png">
+  <title>Stratégies</title>
+  <link rel="stylesheet" href="style.css?v=7">
+</head>
+<body>
+  <main>
+    <h1>Quelle stratégie ?</h1>
+    <section>
+      <label>Nom <input id="situationName" placeholder="ex. Rendez-vous"></label>
+      <label>Description <input id="situationDescription" placeholder="Décrivez brièvement la situation"></label>
+      <label>Joueur Bleu <input id="blueName" value="Moi"></label>
+      <label>Joueur Rouge <input id="redName" value="Adverse"></label>
+      <label>Stratégies Bleu <input id="blueCount" type="number" min="1" max="5" value="2"></label>
+      <label>Stratégies Rouge <input id="redCount" type="number" min="1" max="5" value="2"></label>
+      <div class="actions">
+        <button id="saveJson">Enregistrer</button>
+        <label class="restore">Restaurer<input id="restoreJson" type="file" accept="application/json,.json"></label>
+        <button id="resetApp">Réinitialiser</button>
+      </div>
+      <p id="fileMessage"></p>
+    </section>
+    <h2>Mes espérances de gains uniquement</h2>
+    <div id="matrix"></div>
+    <section>
+      <h2>Probabilités que j’estime connaître</h2>
+      <input id="infoMode" type="hidden" value="opponent">
+      <p>Renseignez uniquement les probabilités fiables. Laissez vide ce qui est inconnu.</p>
+      <div id="probabilities"></div>
+      <p id="infoHint"></p>
+    </section>
+    <button id="analyse">Voir la stratégie recommandée</button>
+    <section id="results">Renseignez la matrice active.</section>
+  </main>
+  <script src="engine.js"></script>
+  <script src="app.js"></script>
+  <script src="layout.js"></script>
+  <script src="probability.js"></script>
+  <script src="livecalc.js"></script>
+  <script src="storage.js"></script>
+  <script>if('serviceWorker' in navigator)navigator.serviceWorker.register('./service-worker.js')</script>
+</body>
+</html>

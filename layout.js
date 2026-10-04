@@ -1,0 +1,1 @@
+(()=>{const m=document.getElementById('matrix'),r=document.getElementById('redCount');function fit(){m.style.gridTemplateColumns='140px repeat('+r.value+', 8rem)'}new MutationObserver(fit).observe(m,{childList:true});r.addEventListener('change',fit);fit()})();
