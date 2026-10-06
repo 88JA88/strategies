@@ -4,6 +4,11 @@
   const val = id => $(id)?.value || '';
   const reset = () => $('results').textContent = 'Une valeur a changé : relancez le calcul.';
 
+  function updateTitles() {
+    $('gainTitle').textContent = `Espérances de gains pour ${val('blueName') || 'Moi'}`;
+    $('probabilityTitle').textContent = `Estimations des probabilités pour ${val('redName') || 'Adverse'} (Facultatif)`;
+  }
+
   function draw(oldValues = {}) {
     c = { b: +$('blueCount').value, r: +$('redCount').value };
     let html = '<div>Bleu ↓<br>Rouge →</div>';
@@ -14,6 +19,7 @@
     }
     $('matrix').innerHTML = html;
     probabilities(oldValues);
+    updateTitles();
     reset();
   }
 
@@ -43,12 +49,12 @@
     return A;
   }
 
-  function list(probabilities, prefix) {
+  function list(probabilities, prefix, showSeconds = false) {
     const chosen = probabilities.map((p, i) => [p, i]).filter(([p]) => p > 1e-8);
     let seconds = 0;
     return chosen.map(([p, i], index) => {
       seconds += Math.round(60 * p);
-      const until = index < chosen.length - 1 ? ` (jusqu’à la ${seconds}e sec.)` : '';
+      const until = showSeconds && index < chosen.length - 1 ? ` (jusqu’à la ${seconds}e sec.)` : '';
       return `<li><b>${val(prefix + i)}</b> : ${(100 * p).toLocaleString('fr-FR', { maximumFractionDigits: 1 })} %${until}</li>`;
     }).join('');
   }
@@ -87,13 +93,15 @@
       unknown.forEach((j, i) => red[j] += remainder * solution.red[i]);
       gain = solution.value;
     }
-    $('results').innerHTML = `<h3>Pour ${val('blueName')}</h3><ul>${list(blue, 'b')}</ul><h3>Pour ${val('redName')}</h3><ul>${list(red, 'r')}</ul><p>Gain pour Bleu : <b>${gain.toLocaleString('fr-FR', { maximumFractionDigits: 3 })}</b>.</p>`;
+    $('results').innerHTML = `<h3>Pour ${val('blueName')}</h3><ul>${list(blue, 'b', true)}</ul><h3>Pour ${val('redName')}</h3><ul>${list(red, 'r')}</ul><p>Gain théorique moyen pour ${val('blueName')} : <b>${gain.toLocaleString('fr-FR', { maximumFractionDigits: 3 })}</b>.</p>`;
   }
 
   $('blueCount').onchange = () => draw(old());
   $('redCount').onchange = () => draw(old());
   $('matrix').oninput = reset;
   $('probabilities').oninput = reset;
+  $('blueName').oninput = updateTitles;
+  $('redName').oninput = updateTitles;
   $('analyse').onclick = run;
   draw();
 })();

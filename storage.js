@@ -2,6 +2,8 @@
   const $ = id => document.getElementById(id);
   const message = $('fileMessage');
   const selector = $('storedSituations');
+  const openJson = $('openJson');
+  const deleteSituation = $('deleteSituation');
   const KEY = 'strategies-situations-v1';
 
   function snapshot() {
@@ -84,6 +86,64 @@
     }
   };
 
+  deleteSituation.onclick = () => {
+    const name = selector.value;
+    if (!name) {
+      message.textContent = 'Choisissez une situation à supprimer.';
+      return;
+    }
+    if (!confirm(`Supprimer la situation « ${name} » de cette application ?`)) return;
+    const situations = saved();
+    delete situations[name];
+    localStorage.setItem(KEY, JSON.stringify(situations));
+    refreshList();
+    message.textContent = `Situation « ${name} » supprimée de la liste.`;
+  };
+
+  openJson.onchange = event => {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const data = JSON.parse(reader.result);
+        if (data.format !== 'decisionnel-v1' || !data.fields) throw Error();
+        const fileName = file.name.replace(/\.json$/i, '');
+        const name = (data.situationName || fileName).trim() || 'Situation importée';
+        data.situationName = name;
+        const situations = saved();
+        situations[name] = data;
+        localStorage.setItem(KEY, JSON.stringify(situations));
+        refreshList(name);
+        restore(data);
+        message.textContent = `Situation « ${name} » ouverte et ajoutée à la liste.`;
+      } catch {
+        message.textContent = 'Ouverture impossible : ce fichier ne correspond pas à une situation Stratégies.';
+      }
+    };
+    reader.readAsText(file);
+    event.target.value = '';
+  };
+
   $('resetApp').onclick = () => location.reload();
+  $('refreshApp').onclick = async () => {
+    if (!('serviceWorker' in navigator) || location.protocol === 'file:') {
+      message.textContent = 'Votre application locale est déjà à jour.';
+      return;
+    }
+    try {
+      const registration = await navigator.serviceWorker.getRegistration();
+      if (!registration) {
+        message.textContent = 'Votre application est à jour.';
+        return;
+      }
+      let updated = false;
+      registration.addEventListener('updatefound', () => { updated = true; }, { once: true });
+      await registration.update();
+      message.textContent = updated ? 'Application actualisée.' : 'Votre application est à jour.';
+    } catch {
+      message.textContent = 'Actualisation impossible : vérifiez votre connexion.';
+    }
+  };
   refreshList();
 })();

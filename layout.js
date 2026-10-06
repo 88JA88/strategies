@@ -1,1 +1,1 @@
-(()=>{const m=document.getElementById('matrix'),r=document.getElementById('redCount');function fit(){m.style.gridTemplateColumns='140px repeat('+r.value+', 8rem)'}new MutationObserver(fit).observe(m,{childList:true});r.addEventListener('change',fit);fit()})();
+(()=>{const m=document.getElementById('matrix'),r=document.getElementById('redCount');function fit(){m.style.gridTemplateColumns='minmax(9rem, 1fr) repeat('+r.value+', minmax(0, 1fr))'}new MutationObserver(fit).observe(m,{childList:true});r.addEventListener('change',fit);fit()})();
