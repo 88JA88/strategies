@@ -52,7 +52,8 @@
         const input = $(id);
         if (input) input.value = value;
       });
-          window.StrategiesApp?.analyse();
+      window.StrategiesApp?.refreshProbabilityLabels();
+      window.StrategiesApp?.analyse();
     });
   }
 

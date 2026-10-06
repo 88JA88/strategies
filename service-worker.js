@@ -1,4 +1,4 @@
-const CACHE = 'strategies-v5';
+const CACHE = 'strategies-v6';
 const ASSETS = [
   './', './index.html', './style.css', './engine.js', './app.js',
   './layout.js', './probability.js', './livecalc.js', './storage.js',

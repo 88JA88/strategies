@@ -2,7 +2,7 @@
   const $ = id => document.getElementById(id);
   let c = { b: 2, r: 2 };
   const val = id => $(id)?.value || '';
-  const reset = () => $('results').textContent = 'Une valeur a changé : relancez le calcul.';
+  const reset = () => {};
 
   function updateTitles() {
     $('gainTitle').textContent = `Espérances de gains pour ${val('blueName') || 'Moi'}`;
@@ -34,6 +34,10 @@
     for (let j = 0; j < c.r; j++) html += `<label>${val(`r${j}`)} <input id="p${j}" type="number" min="0" max="100" placeholder="inconnue" value="${oldValues[`p${j}`] ?? ''}"> %</label>`;
     $('probabilities').innerHTML = html;
     $('infoHint').textContent = 'Les pourcentages inconnus sont traités prudemment.';
+  }
+
+  function refreshProbabilityLabels() {
+    probabilities(old());
   }
 
   function matrix() {
@@ -102,7 +106,10 @@
 
   $('blueCount').onchange = () => draw(old());
   $('redCount').onchange = () => draw(old());
-  $('matrix').oninput = reset;
+  $('matrix').oninput = event => {
+    if (/^r\d+$/.test(event.target.id)) refreshProbabilityLabels();
+    reset();
+  };
   $('probabilities').oninput = reset;
   $('blueName').oninput = updateTitles;
   $('redName').oninput = updateTitles;
@@ -111,6 +118,6 @@
     text.hidden = !text.hidden;
     $('methodButton').setAttribute('aria-expanded', String(!text.hidden));
   };
-  window.StrategiesApp = { analyse: run };
+  window.StrategiesApp = { analyse: run, refreshProbabilityLabels };
   draw();
 })();

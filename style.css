@@ -12,6 +12,7 @@ input,textarea{padding:6px;font:inherit;border:1px solid #aabfbc;border-radius:6
 #matrix{display:grid;gap:5px;align-items:center;width:100%}
 #matrix input:not(.gain),#matrix .gain{width:100%;max-width:100%;box-sizing:border-box}
 #matrix .gain{text-align:center;background:#f3faf8;font-weight:700}
+#results{padding:8px 12px}#results h3{margin:6px 0 2px;font-size:1.1rem}#results ul{margin:2px 0 6px;padding-left:1.5rem}#results li{line-height:1.25}#results p{margin:4px 0}
 button{padding:9px 12px;background:#4f9b67;color:#fff;border:0;border-radius:7px;font:inherit;font-weight:400;cursor:pointer}
 p{margin:6px 0}
 @media(max-width:600px){body{padding:10px;overflow-x:auto}.titleRow{align-items:flex-start;flex-wrap:wrap}.setup{grid-template-columns:1fr}.actions{grid-template-columns:auto minmax(0,1fr)}.setupRight textarea{height:180px}#matrix{font-size:.85rem}}
