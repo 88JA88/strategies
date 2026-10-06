@@ -1,1 +1,8 @@
-(()=>{const button=document.getElementById('analyse');let timer;document.addEventListener('input',e=>{if(!e.target.matches('input'))return;clearTimeout(timer);timer=setTimeout(()=>button.click(),180)})})();
+(() => {
+  let timer;
+  document.addEventListener('input', event => {
+    if (!event.target.matches('#matrix input')) return;
+    clearTimeout(timer);
+    timer = setTimeout(() => window.StrategiesApp?.analyse(), 180);
+  });
+})();

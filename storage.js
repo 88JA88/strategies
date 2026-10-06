@@ -52,7 +52,7 @@
         const input = $(id);
         if (input) input.value = value;
       });
-      $('analyse').click();
+          window.StrategiesApp?.analyse();
     });
   }
 

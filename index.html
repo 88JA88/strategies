@@ -34,6 +34,12 @@
       </div>
       <div class="setupRight">
         <label>Description<textarea id="situationDescription" placeholder="Décrivez ici la situation, les décisions possibles et ce que représentent les gains."></textarea></label>
+        <button id="methodButton" class="methodButton" type="button" aria-expanded="false">Méthode de calcul</button>
+        <div id="methodText" class="methodText" hidden>
+          <p>Si les probabilités concernant les choix de l’adversaire sont connues, l’application calcule le gain moyen de chacune de vos stratégies et recommande celle qui a statistiquement la meilleure espérance de gain.</p>
+          <p>Si aucune probabilité n’est connue, l’application cherche une répartition entre vos stratégies qui maximise votre gain garanti, statistiquement. Elle suppose alors que l’adversaire peut choisir la réponse qui vous est la moins favorable. Cette répartition est utile pour éviter qu’une stratégie prévisible soit exploitée.</p>
+          <p>Dans ce second cas, si l’un des deux s’éloigne de la répartition calculée tandis que l’autre la conserve, il augmente les possibilités de gain de son adversaire.</p>
+        </div>
       </div>
     </section>
     <h2 id="gainTitle">Espérances de gains</h2>
@@ -45,7 +51,7 @@
       <div id="probabilities"></div>
       <p id="infoHint"></p>
     </section>
-    <button id="analyse">Voir la stratégie recommandée</button>
+    <h2>Stratégie recommandée</h2>
     <section id="results">Renseignez la matrice active.</section>
   </main>
   <script src="engine.js"></script>

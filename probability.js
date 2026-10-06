@@ -1,1 +1,58 @@
-(()=>{const $=id=>document.getElementById(id),box=$('probabilities'),hint=$('infoHint'),button=$('analyse');function state(){let fields=[...box.querySelectorAll('input')],blank=fields.filter(x=>x.value.trim()===''),sum=fields.reduce((s,x)=>s+(x.value.trim()===''?0:Number(x.value)),0);return{fields,blank,sum}}function check(){let s=state();if(s.sum>100){hint.textContent='Erreur : les probabilités dépassent 100 %.';return false}if(s.blank.length===1){let x=s.blank[0];x.value=(100-s.sum).toLocaleString('fr-FR',{maximumFractionDigits:6}).replace(',','.');x.dataset.automatic='true';hint.textContent='La dernière probabilité a été complétée automatiquement à '+x.value+' %.';return true}if(!s.blank.length){let ok=Math.abs(s.sum-100)<1e-8;hint.textContent=ok?'Distribution complète : 100 %.':'Erreur : une distribution complète doit totaliser 100 %.';return ok}hint.textContent='Information partielle : les probabilités non renseignées restent inconnues.';return true}let original=button.onclick;button.onclick=e=>{let s=state();if(!s.blank.length&&Math.abs(s.sum-100)>1e-8){$('results').textContent='Calcul impossible : une distribution complète doit totaliser 100 %.';return}original(e)};box.addEventListener('input',e=>{box.querySelectorAll('input[data-automatic="true"]').forEach(x=>{if(x!==e.target){x.value='';delete x.dataset.automatic}});delete e.target.dataset.automatic;check();button.click()});new MutationObserver(check).observe(box,{childList:true});check()})();
+(() => {
+  const $ = id => document.getElementById(id);
+  const box = $('probabilities');
+  const hint = $('infoHint');
+
+  function state() {
+    const fields = [...box.querySelectorAll('input')];
+    const blank = fields.filter(field => field.value.trim() === '');
+    const sum = fields.reduce((total, field) => total + (field.value.trim() === '' ? 0 : Number(field.value)), 0);
+    return { fields, blank, sum };
+  }
+
+  function check() {
+    const current = state();
+    if (current.sum > 100) {
+      hint.textContent = 'Erreur : les probabilités dépassent 100 %.';
+      return false;
+    }
+    if (current.blank.length === 1) {
+      const field = current.blank[0];
+      field.value = (100 - current.sum).toLocaleString('fr-FR', { maximumFractionDigits: 6 }).replace(',', '.');
+      field.dataset.automatic = 'true';
+      hint.textContent = `La dernière probabilité a été complétée automatiquement à ${field.value} %.`;
+      return true;
+    }
+    if (!current.blank.length) {
+      const valid = Math.abs(current.sum - 100) < 1e-8;
+      hint.textContent = valid ? 'Distribution complète : 100 %.' : 'Erreur : une distribution complète doit totaliser 100 %.';
+      return valid;
+    }
+    hint.textContent = 'Information partielle : les probabilités non renseignées restent inconnues.';
+    return true;
+  }
+
+  function analyse() {
+    const current = state();
+    if (current.sum > 100 || (!current.blank.length && Math.abs(current.sum - 100) > 1e-8)) {
+      $('results').textContent = 'Calcul impossible : une distribution complète doit totaliser 100 %.';
+      return;
+    }
+    window.StrategiesApp?.analyse();
+  }
+
+  box.addEventListener('input', event => {
+    box.querySelectorAll('input[data-automatic="true"]').forEach(field => {
+      if (field !== event.target) {
+        field.value = '';
+        delete field.dataset.automatic;
+      }
+    });
+    delete event.target.dataset.automatic;
+    check();
+    analyse();
+  });
+
+  new MutationObserver(check).observe(box, { childList: true });
+  check();
+})();

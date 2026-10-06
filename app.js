@@ -76,13 +76,14 @@
     }
     if (total > 1 + 1e-9) return $('results').textContent = 'Calcul impossible : les probabilités dépassent 100 %.';
 
-    let blue, red, gain;
+    let blue, red, gain, gainLabel;
     if (!unknown.length) {
       const expected = A.map(row => row.reduce((sum, score, j) => sum + score * known[j], 0));
       const best = Math.max(...expected);
       blue = expected.map(score => Math.abs(score - best) < 1e-9 ? 1 : 0);
       red = known;
       gain = best;
+      gainLabel = 'Gain théorique moyen';
     } else {
       const remainder = 1 - total;
       const constrained = A.map(row => unknown.map(j => row.reduce((sum, score, k) => sum + known[k] * score, 0) + remainder * row[j]));
@@ -92,8 +93,11 @@
       red = known.slice();
       unknown.forEach((j, i) => red[j] += remainder * solution.red[i]);
       gain = solution.value;
+      gainLabel = unknown.length === c.r
+        ? 'Gain minimal théorique garanti'
+        : 'Gain minimal théorique garanti, compte tenu des probabilités connues';
     }
-    $('results').innerHTML = `<h3>Pour ${val('blueName')}</h3><ul>${list(blue, 'b', true)}</ul><h3>Pour ${val('redName')}</h3><ul>${list(red, 'r')}</ul><p>Gain théorique moyen pour ${val('blueName')} : <b>${gain.toLocaleString('fr-FR', { maximumFractionDigits: 3 })}</b>.</p>`;
+    $('results').innerHTML = `<h3>Pour ${val('blueName')}</h3><ul>${list(blue, 'b', true)}</ul><h3>Pour ${val('redName')}</h3><ul>${list(red, 'r')}</ul><p>${gainLabel} pour ${val('blueName')} : <b>${gain.toLocaleString('fr-FR', { maximumFractionDigits: 3 })}</b>.</p>`;
   }
 
   $('blueCount').onchange = () => draw(old());
@@ -102,6 +106,11 @@
   $('probabilities').oninput = reset;
   $('blueName').oninput = updateTitles;
   $('redName').oninput = updateTitles;
-  $('analyse').onclick = run;
+  $('methodButton').onclick = () => {
+    const text = $('methodText');
+    text.hidden = !text.hidden;
+    $('methodButton').setAttribute('aria-expanded', String(!text.hidden));
+  };
+  window.StrategiesApp = { analyse: run };
   draw();
 })();
